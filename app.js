@@ -9,8 +9,16 @@ GAME RULES:
 
 */
 
+/*
+ADDITIONAL GAME RULES AFTER CODING CHALLENGE:
+
+- If a player rolls two 6 in a row, he loses his entire score. After that, it's the next player's turn.
+
+*/
+
 // Keep track of both players' scores
-var scores, roundScore, activePlayer, gamePlaying;
+var scores, roundScore, activePlayer, gamePlaying, previousThrow, currentThrow,
+    winningScore;
 
 // Call the initialization function
 init();
@@ -45,20 +53,31 @@ document.querySelector('.btn-roll').addEventListener('click', btn);
 
 document.querySelector('.btn-roll').addEventListener('click', function () {
     if (gamePlaying) {
+        previousThrow = currentThrow;
         // 1. Random Number
-        var dice = Math.floor(Math.random() * 6) + 1;
+        var dice = [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1];
+        console.log(dice);
+        currentThrow = dice[0] + dice[1];
 
         // 2. Display the result
-        var diceDOM = document.querySelector('.dice');
-        diceDOM.style.display = 'block';
+        var dice0DOM = document.getElementById('dice0');
+        var dice1DOM = document.getElementById('dice1');
+        dice0DOM.style.display = 'block';
+        dice1DOM.style.display = 'block';
         // Change the dice face image
-        diceDOM.src = 'dice-' + dice + '.png';
+        dice0DOM.src = 'dice-' + dice[0] + '.png';
+        dice1DOM.src = 'dice-' + dice[1] + '.png';
 
 
         // 3. Update the round score IF the rolled number was NOT a 1
-        if (dice !== 1) {
+        if (dice[0] !== 1 && dice[1] !== 1) {
+            if (dice[0] === 6 && dice[1] === 6) {
+                scores[activePlayer] = 0;
+                document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
+                nextPlayer();
+            }
             // Add score
-            roundScore += dice;
+            roundScore += dice[0] + dice[1];
             document.querySelector('#current-' + activePlayer).textContent = roundScore;
         } else {
             // Next player
@@ -80,9 +99,10 @@ document.querySelector('.btn-hold').addEventListener('click', function () {
 
 
         // 3. Check if the active player won the game
-        if (scores[activePlayer] >= 100) {
+        if (scores[activePlayer] >= winningScore) {
             document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
-            document.querySelector('.dice').style.display = 'none';
+            document.getElementById('dice0').style.display = 'none';
+            document.getElementById('dice1').style.display = 'none';
             document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
             document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
             gamePlaying = false;
@@ -97,6 +117,8 @@ document.querySelector('.btn-hold').addEventListener('click', function () {
 function nextPlayer() {
     activePlayer = activePlayer === 1 ? 0 : 1;
     roundScore = 0;
+    currentThrow = 0;
+    previousThrow = 0;
 
     // Empty round scores of both players
     document.getElementById('current-0').textContent = '0';
@@ -107,7 +129,8 @@ function nextPlayer() {
     document.querySelector('.player-1-panel').classList.toggle('active');
 
     // Hide the dice
-    document.querySelector('.dice').style.display = 'none';
+    document.getElementById('dice0').style.display = 'none';
+    document.getElementById('dice1').style.display = 'none';
 }
 
 
@@ -120,13 +143,23 @@ function init() {
     scores = [0, 0];
     // Current round's score of each player
     roundScore = 0;
+    previousThrow = 0;
     // 0,1 are the two players
     activePlayer = 0;
 
     gamePlaying = true;
 
+    // User-defined winning score
+    winningScore = document.getElementById('winning_score').value;
+    if (winningScore < 10 || winningScore >= 400) {
+        winningScore = 100;
+        document.getElementById('winning_score').value = 100;
+    }
+    console.log(winningScore);
+
     // How to manipulate the CSS of an element
-    document.querySelector('.dice').style.display = 'none';
+    document.getElementById('dice0').style.display = 'none';
+    document.getElementById('dice1').style.display = 'none';
 
     // Initialize all scores to 0
     document.getElementById('score-0').textContent = '0';

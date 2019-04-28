@@ -2,6 +2,28 @@
 *** GENERAL
 **********************************************/
 
+#winning_score,
+#winning_score_label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 520px;
+    color: #555;
+    font-size: 18px;
+    font-family: 'Lato';
+    text-align: center;
+    padding: 10px;
+    width: 160px;
+    text-transform: uppercase;
+}
+
+#winning_score_label {
+    left: 40%;
+    transform: translateX(-80%);
+    width: 200px;
+    top: 523px;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -162,11 +184,17 @@ i {
 .dice {
     position: absolute;
     left: 50%;
-    top: 178px;
+    top: 258px;
     transform: translateX(-50%);
     height: 100px;
     box-shadow: 0px 10px 60px rgba(0, 0, 0, 0.10);
 }
+
+#dice0 {
+    top: 130px;
+}
+
+
 
 .winner {
     background-color: #f7f7f7;
